@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Capital One</title>
+</head>
+<body style="font-family: sans-serif; background-image: url('accountSummary.png'); background-repeat: no-repeat; background-size: cover;">
+    <br><br><br><br><br><br><br>
+    {{if .authenticated}}
+        <div style="height: 30px; margin: 0 auto; background-color: lightgreen; border: 2px solid darkgreen; border-radius: 2px; text-align: center;"><img src="checkbox.png" height="15" style="margin-top: 6px; margin-right: 5px;">Login Authenticated by <b>{{.id}}</b></div>
+    {{end}}
+    <br>
+</body>
+</html>

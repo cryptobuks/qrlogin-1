@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create A New Account</title>
+
+    <script type="text/javascript" src="qrcode.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body style="font-family: sans-serif;">
+ <div style="width: auto; height: 100px; background-image: url('new-header.jpeg'); background-repeat: repeat; background-size: contain; margin-top: -10px;"></div>
+
+    <div style="width: 600px; margin: 0 auto; ">
+        <a href="https://verified.capitalone.com/sic-ui/#/esignin?Product=Card">
+            <div style="width: auto; height: 500px; background-image: url('new-login.jpg'); background-repeat: no-repeat; background-size: contain; margin: 0 auto; background-position:center;"></div>
+        </a>
+            <p id="generate" style="text-align: center">Enter Through CapitalOne</p>
+        <div id="qrcode" style="margin: 0 auto; align-content: center; padding-left: 21%"></div>
+    </div>
+
+    <script type="text/javascript">
+
+        var token
+
+        $(window).load(function() {
+            $.getJSON( "generateLoginToken", function( data ) {
+                jsonData = JSON.parse(data);
+                token = jsonData['token']
+            }).done(function (data) {
+                new QRCode(document.getElementById("qrcode"), {
+                    text: token,
+                    width: 350,
+                    height: 350,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                waitForDeviceAuthentication();
+            });
+        });
+
+        function waitForDeviceAuthentication() {
+            (function worker() {
+                $.post('/checkLoginTokenStatus', '{"token": "' + token + '"}').done( function (data) {
+                    if (data['authenticated'] == true || data['authenticated'] == "true") {
+                        var form = $('<form action="/home2" method="post">' +
+                            '<input type="text" name="id" value="' + data['id'] + '" />' +
+                            '<input type="text" name="authenticated" value="' + data['authenticated'] + '" />' +
+                            '</form>');
+                        $('body').append(form);
+                        form.submit();
+                    } else {
+                        console.log(data['authenticated'])
+                    }
+                    setTimeout(worker, 1000)
+                });
+            })();
+        }
+    </script>
+
+<br><br><br><br>
+</body>
+</html>
